@@ -2,7 +2,9 @@ import { Request, Response } from "express";
 import UserModel from "../models/UserModel";
 import jwt, { SignOptions } from "jsonwebtoken";
 import config from "../config";
-
+import crypto from "crypto";
+import { sendResetPasswordEmail, sendVerificationEmail } from "../utils/emailService";
+import bcrypt from "bcryptjs";
 export const register = async (
   req: Request,
   res: Response
@@ -46,7 +48,7 @@ export const register = async (
       config.jwt.tokenSecret as string,
       signOptions
     );
-
+    await sendVerificationEmail(email, token);
     return res
       .status(201)
       .json({ message: "User registered successfully", token });
@@ -57,11 +59,11 @@ export const register = async (
 };
 
 export const login = async (req: Request, res: Response) => {
-  const { mobileNumber, email, pin } = req.body;
+  const { mobileOrEmail, pin } = req.body;
 
   try {
     const user = await UserModel.findOne({
-      $or: [{ mobileNumber }, { email }],
+      $or: [{ mobileNumber: mobileOrEmail }, { email: mobileOrEmail }],
     });
     if (!user) {
       return res.status(400).json({ message: "Invalid credentials." });
@@ -95,5 +97,77 @@ export const login = async (req: Request, res: Response) => {
   } catch (error) {
     console.error(error);
     res.status(500).json({ message: "Server error during login." });
+  }
+};
+
+export const logout = async (req: Request, res: Response) => {
+  const { userId } = req.body;
+  try {
+    const user = await UserModel.findById(userId);
+    if (!user) {
+      return res.status(404).json({ message: "User not found." });
+    }
+    user.currentSession = null;
+    await user.save();
+    res.status(200).json({ message: "Logout successful!" });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: "Server error during logout." });
+  }
+};
+
+export const forgotPassword = async (req: Request, res: Response) => {
+  const { email } = req.body;
+
+  try {
+    const user = await UserModel.findOne({ email });
+    if (!user) {
+      return res.status(404).json({ message: "User not found." });
+    }
+
+    const resetToken = crypto.randomBytes(20).toString("hex");
+    user.resetPasswordToken = crypto
+      .createHash("sha256")
+      .update(resetToken)
+      .digest("hex");
+    user.resetPasswordExpire = new Date(Date.now() + 10 * 60 * 1000);
+
+    await user.save();
+
+    await sendResetPasswordEmail(email, resetToken);
+
+    res.status(200).json({ message: "Reset password email sent." });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: "Server error during forgot password." });
+  }
+};
+
+export const resetPassword = async (req: Request, res: Response) => {
+  const { token, newPin } = req.body;
+
+  try {
+   
+    const hashedToken = crypto.createHash("sha256").update(token).digest("hex");
+
+    const user = await UserModel.findOne({
+      resetPasswordToken: hashedToken,
+      resetPasswordExpires: { $gt: Date.now() },
+    });
+
+    if (!user) {
+      return res.status(400).json({ message: "Invalid or expired token." });
+    }
+
+    user.pin = await bcrypt.hash(newPin, 10);
+    user.resetPasswordToken = null;
+    user.resetPasswordExpire = null;
+
+    await user.save();
+
+    res.status(200).json({ message: "Password reset successful!" });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: "Server error during password reset." });
   }
 };
