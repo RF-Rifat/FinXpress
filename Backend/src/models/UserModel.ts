@@ -6,11 +6,11 @@ export interface IUser extends Document {
   pin: string;
   mobileNumber: string;
   email: string;
-  accountType: "USER" | "AGENT" | "ADMIN";
+  accountType: "user" | "agent" | "admin";
   nid: string;
   balance: number;
   income: number;
-  status: "PENDING" | "ACTIVE" | "BLOCKED";
+  status: "pending" | "active" | "blocked";
   currentSession: string | null;
   resetPasswordToken: string | null;
   resetPasswordExpire: Date | null;
@@ -33,16 +33,16 @@ const userSchema = new Schema<IUser>(
     },
     accountType: {
       type: String,
-      enum: ["USER", "AGENT", "ADMIN"],
+      enum: ["user", "agent", "admin"],
       required: true,
     },
     nid: { type: String, required: true, unique: true, trim: true },
     balance: {
       type: Number,
       default: function (this: IUser) {
-        return this.accountType === "USER"
+        return this.accountType === "user"
           ? 40
-          : this.accountType === "AGENT"
+          : this.accountType === "agent"
           ? 100000
           : 0;
       },
@@ -50,9 +50,9 @@ const userSchema = new Schema<IUser>(
     income: { type: Number, default: 0 },
     status: {
       type: String,
-      enum: ["PENDING", "ACTIVE", "BLOCKED"],
+      enum: ["pending", "active", "blocked"],
       default: function (this: IUser) {
-        return this.accountType === "AGENT" ? "PENDING" : "ACTIVE";
+        return this.accountType === "admin" ? "pending" : "active";
       },
     },
     currentSession: { type: String, default: null },
