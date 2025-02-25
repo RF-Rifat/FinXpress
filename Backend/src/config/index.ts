@@ -13,7 +13,7 @@ export default {
   bcrypt_salt_rounds: process.env.BCRYPT_SALT_ROUNDS,
   reset_password_url: process.env.RESET_PASSWORD_URL,
   verify_user_url: process.env.VERIFY_USER_URL,
-
+  
   jwt: {
     accessTokenSecret: process.env.JWT_ACCESSTOKEN_SECRET,
     refreshTokenSecret: process.env.JWT_REFRESHTOKEN_SECRET,
