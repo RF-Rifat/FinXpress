@@ -52,7 +52,7 @@ const userSchema = new Schema<IUser>(
       type: String,
       enum: ["pending", "active", "blocked"],
       default: function (this: IUser) {
-        return this.accountType === "admin" ? "pending" : "active";
+        return this.accountType === "admin" ? "active" : "pending";
       },
     },
     currentSession: { type: String, default: null },
