@@ -1,13 +1,18 @@
-import { Button } from "../components/Button";
-
-const Home = () => {
+import CashOut from "./CashOut";
+import CashIn from "./CashIn";
+import ApproveAgent from "./ApproveAgent";
+import BalanceInquiry from "./BalanceInquiry";
+const SendMoney = () => {
   return (
-    <div>
-      <Button type="submit" className="w-full" isLoading={false}>
-        Login
-      </Button>
+    <div className="min-h-screen bg-gray-100 py-8">
+      <div className="space-y-8">
+        <CashOut />
+        <CashIn />
+        <ApproveAgent />
+        <BalanceInquiry />
+      </div>
     </div>
   );
 };
 
-export default Home;
+export default SendMoney;

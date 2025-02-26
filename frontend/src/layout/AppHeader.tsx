@@ -7,9 +7,10 @@ import NotificationDropdown from "../components/NotificationDropdown";
 import UserDropdown from "../components/UserDropdown";
 import { BiSearch } from "react-icons/bi";
 
+
 const AppHeader: React.FC = () => {
   const [isApplicationMenuOpen, setApplicationMenuOpen] = useState(false);
-
+  
   const { isMobileOpen, toggleSidebar, toggleMobileSidebar } = useSidebar();
 
   const handleToggle = () => {
@@ -85,14 +86,10 @@ const AppHeader: React.FC = () => {
           </button>
 
           <Link to="/" className="lg:hidden">
+            <img className="dark:hidden size-8" src="/logo.png" alt="Logo" />
             <img
-              className="dark:hidden"
-              src="./images/logo/logo.svg"
-              alt="Logo"
-            />
-            <img
-              className="hidden dark:block"
-              src="./images/logo/logo-dark.svg"
+              className="hidden dark:block size-8"
+              src="./logo.png"
               alt="Logo"
             />
           </Link>

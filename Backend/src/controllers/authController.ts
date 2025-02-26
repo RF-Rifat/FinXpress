@@ -121,24 +121,24 @@ export const login = async (req: Request, res: Response) => {
 };
 
 export const logout = async (req: Request, res: Response) => {
-   const { token } = req.body;
-   try {
-     const decoded = jwt.verify(token, config.jwt.tokenSecret as string) as {
-       userId: string;
-     };
+  const { token } = req.body;
+  try {
+    const decoded = jwt.verify(token, config.jwt.tokenSecret as string) as {
+      userId: string;
+    };
 
-     const user = await UserModel.findById(decoded.userId);
-     if (!user) {
-       return res.status(404).json({ message: "User not found." });
-     }
-     user.currentSession = null;
-     await user.save();
+    const user = await UserModel.findById(decoded.userId);
+    if (!user) {
+      return res.status(404).json({ message: "User not found." });
+    }
+    user.currentSession = null;
+    await user.save();
 
-     res.status(200).json({ message: "Logout successful!" });
-   } catch (error) {
-     console.error(error);
-     res.status(500).json({ message: "Server error during logout." });
-   }
+    res.status(200).json({ message: "Logout successful!" });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: "Server error during logout." });
+  }
 };
 
 export const forgotPassword = async (req: Request, res: Response) => {
@@ -172,7 +172,6 @@ export const resetPassword = async (req: Request, res: Response) => {
   const { token, newPin } = req.body;
 
   try {
-   
     const hashedToken = crypto.createHash("sha256").update(token).digest("hex");
 
     const user = await UserModel.findOne({
