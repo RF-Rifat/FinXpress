@@ -29,7 +29,7 @@ export const authApi = {
   signup: async (data: {
     name: string;
     email: string;
-    mobile: string;
+    mobileNumber: string;
     nid: string;
     pin: string;
     accountType: "user" | "agent";

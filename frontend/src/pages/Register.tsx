@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import React from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -50,7 +51,7 @@ export const SignupForm: React.FC = () => {
       toast.success(
         "Account created successfully! Please verify your account."
       );
-      navigate("/verify");
+      navigate("/login");
     } catch (error: any) {
       if (error.response?.data?.message) {
         toast.error(error.response.data.message);

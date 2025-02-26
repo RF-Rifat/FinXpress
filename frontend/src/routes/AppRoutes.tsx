@@ -4,7 +4,6 @@ import { LoginForm } from "../pages/Login";
 import { SignupForm } from "../pages/Register";
 import Dashboard from "../pages/Dashboard";
 import { ForgotPinForm } from "../pages/ForgotPin";
-import { VerifyAccountForm } from "../pages/VerifyAccount";
 
 const AppRoutes = () => {
   return (
@@ -14,7 +13,6 @@ const AppRoutes = () => {
         <Route path="/login" element={<LoginForm />} />
         <Route path="/signup" element={<SignupForm />} />
         <Route path="/forgot-pin" element={<ForgotPinForm />} />
-        <Route path="/verify-account" element={<VerifyAccountForm />} />
         <Route path="/dashboard" element={<Dashboard />} />
       </Routes>
     </Router>

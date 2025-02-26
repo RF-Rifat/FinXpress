@@ -3,7 +3,7 @@ import UserModel from "../models/UserModel";
 import jwt, { SignOptions } from "jsonwebtoken";
 import config from "../config";
 import crypto from "crypto";
-import { sendResetPasswordEmail, sendVerificationEmail } from "../utils/emailService";
+import { sendResetPasswordEmail } from "../utils/emailService";
 import bcrypt from "bcryptjs";
 export const register = async (
   req: Request,
@@ -48,7 +48,6 @@ export const register = async (
       config.jwt.tokenSecret as string,
       signOptions
     );
-    await sendVerificationEmail(email, token);
     return res
       .status(201)
       .json({ message: "User registered successfully", token });
@@ -58,6 +57,27 @@ export const register = async (
   }
 };
 
+// export const verifyEmail = async (req: Request, res: Response) => {
+//   const { token } = req.query;
+//   try {
+//     if (!token) {
+//       return res.status(400).json({ message: "Token not provided" });
+//     }
+//     const decoded = jwt.verify(token as string, config.jwt.tokenSecret as string);
+//     const userId = (decoded as any).userId;
+//     const user = await UserModel.findById(userId);
+//     if (!user) {
+//       return res.status(404).json({ message: "User not found" });
+//     } else {
+//       user.emailVerified = true;
+//       await user.save();
+//       return res.status(200).json({ message: "Email verified successfully" });
+//     }
+//   } catch (error) {
+//     console.error(error);
+//     return res.status(500).json({ message: "Internal server error" });
+//   }
+// }
 export const login = async (req: Request, res: Response) => {
   const { mobileOrEmail, pin } = req.body;
 

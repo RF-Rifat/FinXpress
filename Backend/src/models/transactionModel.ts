@@ -1,19 +1,38 @@
-const transactionSchema = new mongoose.Schema({
-  senderId: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
-  receiverId: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
-  agentId: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: "Agent",
-    default: null,
-  },
-  amount: { type: Number, required: true },
-  transactionType: {
-    type: String,
-    enum: ["Send Money", "Cash In", "Cash Out"],
-  },
-  transactionId: { type: String, unique: true, required: true },
-  fee: { type: Number, default: 0 },
-  createdAt: { type: Date, default: Date.now },
-});
+import mongoose, { Schema } from "mongoose";
+import { Document } from "mongoose";
 
-module.exports = mongoose.model("Transaction", transactionSchema);
+export interface ITransaction extends Document {
+  transactionId: string;
+  sender: mongoose.Schema.Types.ObjectId;
+  receiver: mongoose.Schema.Types.ObjectId;
+  amount: number;
+  fee: number;
+  type: "send-money" | "cash-out" | "cash-in";
+  status: "pending" | "success" | "failed";
+  timestamp: Date;
+}
+
+const transactionSchema = new Schema<ITransaction>(
+  {
+    transactionId: { type: String, unique: true, required: true },
+    sender: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "User",
+      required: true,
+    },
+    receiver: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "User",
+      required: true,
+    },
+    amount: { type: Number, required: true },
+    fee: { type: Number, default: 0 },
+    type: {
+      type: String,
+      enum: ["send-money", "cash-out", "cash-in"],
+      required: true,
+    },
+  },
+  { timestamps: true }
+);
+export default mongoose.model<ITransaction>("Transaction", transactionSchema);
