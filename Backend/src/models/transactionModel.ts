@@ -7,7 +7,7 @@ export interface ITransaction extends Document {
   receiver: mongoose.Schema.Types.ObjectId;
   amount: number;
   fee: number;
-  type: "send-money" | "cash-out" | "cash-in";
+  type: "sendMoney" | "cashOut" | "cashIn";
   status: "pending" | "success" | "failed";
   timestamp: Date;
 }

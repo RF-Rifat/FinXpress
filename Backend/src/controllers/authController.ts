@@ -107,7 +107,7 @@ export const login = async (req: Request, res: Response) => {
       { userId: user._id, accountType: user.accountType },
       config.jwt.tokenSecret as string,
       {
-        expiresIn: "1h",
+        expiresIn: "10d",
       }
     );
     user.currentSession = token;
@@ -121,19 +121,24 @@ export const login = async (req: Request, res: Response) => {
 };
 
 export const logout = async (req: Request, res: Response) => {
-  const { userId } = req.body;
-  try {
-    const user = await UserModel.findById(userId);
-    if (!user) {
-      return res.status(404).json({ message: "User not found." });
-    }
-    user.currentSession = null;
-    await user.save();
-    res.status(200).json({ message: "Logout successful!" });
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({ message: "Server error during logout." });
-  }
+   const { token } = req.body;
+   try {
+     const decoded = jwt.verify(token, config.jwt.tokenSecret as string) as {
+       userId: string;
+     };
+
+     const user = await UserModel.findById(decoded.userId);
+     if (!user) {
+       return res.status(404).json({ message: "User not found." });
+     }
+     user.currentSession = null;
+     await user.save();
+
+     res.status(200).json({ message: "Logout successful!" });
+   } catch (error) {
+     console.error(error);
+     res.status(500).json({ message: "Server error during logout." });
+   }
 };
 
 export const forgotPassword = async (req: Request, res: Response) => {

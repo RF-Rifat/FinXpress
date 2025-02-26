@@ -12,7 +12,7 @@ api.interceptors.request.use(
   (config) => {
     const token = localStorage.getItem("token");
     if (token) {
-      config.headers.Authorization = `Bearer ${token}`;
+      config.headers.Authorization = `${token}`;
     }
     return config;
   },
@@ -43,6 +43,14 @@ export const authApi = {
 
   verifyAccount: async (data: { code: string }) => {
     return api.post("/auth/verify", data);
+  },
+  logout: async () => {
+    const token = localStorage.getItem("token");
+    if (!token) {
+      throw new Error("No token found.");
+    }
+
+    return api.post("/auth/logout", { token });
   },
 };
 
