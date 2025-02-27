@@ -30,10 +30,11 @@ const AgentApprovalRequests: React.FC = () => {
 
   const handleApproveReject = async (
     agentId: string,
-    status: "approve" | "reject"
+    status: "active" | "reject"
   ) => {
     try {
-      await adminApi.approveAgent({ agentId, status });
+      const mappedStatus = status === "active" ? "active" : "blocked";
+      await adminApi.approveAgent({ agentId, status: mappedStatus });
       setAgents((prev) =>
         prev.map((agent) =>
           agent._id === agentId ? { ...agent, status } : agent
@@ -72,7 +73,7 @@ const AgentApprovalRequests: React.FC = () => {
               <td>{agent.status}</td>
               <td>
                 <button
-                  onClick={() => handleApproveReject(agent._id, "approve")}
+                  onClick={() => handleApproveReject(agent._id, "active")}
                   className="bg-green-500 text-white px-3 py-1 rounded-md mr-2"
                 >
                   Approve

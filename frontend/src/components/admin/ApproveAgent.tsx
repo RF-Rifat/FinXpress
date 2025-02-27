@@ -3,7 +3,7 @@ import { adminApi } from "../../services/api";
 
 const ApproveAgent: React.FC = () => {
   const [agentId, setAgentId] = useState("");
-  const [status, setStatus] = useState<"approve" | "reject">("approve");
+  const [status, setStatus] = useState<"active" | "blocked">("active");
   const [message, setMessage] = useState("");
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -11,7 +11,7 @@ const ApproveAgent: React.FC = () => {
     try {
       await adminApi.approveAgent({ agentId, status });
       setMessage(
-        `Agent ${status === "approve" ? "approved" : "rejected"} successfully.`
+        `Agent ${status === "active" ? "active" : "rejected"} successfully.`
       );
     } catch (error) {
       setMessage("Failed to update agent status.");
@@ -44,11 +44,11 @@ const ApproveAgent: React.FC = () => {
           </label>
           <select
             value={status}
-            onChange={(e) => setStatus(e.target.value as "approve" | "reject")}
+            onChange={(e) => setStatus(e.target.value as "active" | "blocked")}
             className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-primary focus:border-primary"
           >
-            <option value="approve">Approve</option>
-            <option value="reject">Reject</option>
+            <option value="active">Approve</option>
+            <option value="blocked">Reject</option>
           </select>
         </div>
         <button
