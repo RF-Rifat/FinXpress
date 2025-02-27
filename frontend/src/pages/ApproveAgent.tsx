@@ -3,7 +3,7 @@ import { adminApi } from "../services/api";
 
 const ApproveAgent: React.FC = () => {
   const [agentId, setAgentId] = useState("");
-  const [status, setStatus] = useState<"approve" | "reject">("approve");
+  const [status, setStatus] = useState<"active" | "blocked">("active");
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
 
@@ -15,7 +15,7 @@ const ApproveAgent: React.FC = () => {
     try {
       const response = await adminApi.approveAgent({ agentId, status });
       setSuccess(
-        `Agent ${status === "approve" ? "approved" : "rejected"} successfully!`
+        `Agent ${status === "active" ? "active" : "rejected"} successfully!`
       );
       console.log("Approve Agent Response:", response.data);
     } catch (err) {
@@ -47,11 +47,11 @@ const ApproveAgent: React.FC = () => {
           </label>
           <select
             value={status}
-            onChange={(e) => setStatus(e.target.value as "approve" | "reject")}
+            onChange={(e) => setStatus(e.target.value as "active" | "blocked")}
             className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-primary focus:border-primary"
           >
-            <option value="approve">Approve</option>
-            <option value="reject">Reject</option>
+            <option value="active">Active</option>
+            <option value="blocked">Blocked</option>
           </select>
         </div>
         {error && <p className="text-red-500 text-sm">{error}</p>}
