@@ -1,5 +1,7 @@
 import { Request, Response, NextFunction } from "express";
 import UserModel from "../models/UserModel";
+import config from "../config";
+import jwt from "jsonwebtoken";
 
 export const adminMiddleware = async (
   req: Request,
@@ -8,7 +10,12 @@ export const adminMiddleware = async (
 ) => {
   try {
     const user = await UserModel.findById(req.user?._id);
-    if (!user || user.accountType !== "admin") {
+    const { token } = req.body;
+    const decoded = jwt.verify(token, config.jwt.tokenSecret as string) as {
+      accountType: string;
+      userId: string;
+    };
+    if (!decoded || decoded.accountType !== "admin") {
       return res.status(403).json({ message: "Access denied. Admin only." });
     }
     next();

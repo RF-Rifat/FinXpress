@@ -1,7 +1,32 @@
 import { Request, Response } from "express";
 import UserModel from "../models/UserModel";
+import transactionModel from "../models/transactionModel";
 
 export const AdminController = {
+  getAllAdminData: async (req: Request, res: Response) => {
+    try {
+      const totalMoney = await UserModel.aggregate([
+        { $group: { _id: null, total: { $sum: "$balance" } } },
+      ]);
+      const agentApprovalRequests = await UserModel.find({
+        accountType: "agent",
+        status: "pending",
+      });
+      const allUsers = await UserModel.find({ accountType: "user" });
+      const allAgents = await UserModel.find({ accountType: "agent" });
+      const allTransactions = await transactionModel.find();
+
+      res.status(200).json({
+        totalMoney: totalMoney[0]?.total || 0,
+        agentApprovalRequests,
+        allUsers,
+        allAgents,
+        allTransactions,
+      });
+    } catch (error: any) {
+      res.status(500).json({ message: "Server error.", error: error.message });
+    }
+  },
   blockUser: async (req: Request, res: Response) => {
     try {
       const { userId } = req.params;

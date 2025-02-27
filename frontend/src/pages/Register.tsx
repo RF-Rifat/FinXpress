@@ -51,7 +51,7 @@ export const SignupForm: React.FC = () => {
       toast.success(
         "Account created successfully! Please verify your account."
       );
-      navigate("/login");
+      navigate("/");
     } catch (error: any) {
       if (error.response?.data?.message) {
         toast.error(error.response.data.message);
@@ -154,7 +154,7 @@ export const SignupForm: React.FC = () => {
           <p className="text-center text-sm text-gray-600">
             Already have an account?{" "}
             <Link
-              to="/login"
+              to="/"
               className="text-primary-600 hover:text-primary-700 font-medium"
             >
               Sign In

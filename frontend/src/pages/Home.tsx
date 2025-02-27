@@ -2,7 +2,7 @@ import CashOut from "./CashOut";
 import CashIn from "./CashIn";
 import ApproveAgent from "./ApproveAgent";
 import BalanceInquiry from "./BalanceInquiry";
-const SendMoney = () => {
+const Home = () => {
   return (
     <div className="min-h-screen bg-gray-100 py-8">
       <div className="space-y-8">
@@ -15,4 +15,4 @@ const SendMoney = () => {
   );
 };
 
-export default SendMoney;
+export default Home;

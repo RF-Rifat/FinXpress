@@ -1,19 +1,30 @@
-import { Request, Response } from "express";
-import UserModel from "../models/UserModel";
+import express, { Request, Response } from "express";
+import { UserController } from "../controllers/userController";
+import { AgentController } from "../controllers/agentController";
 
-export const getBalance = async (req: Request, res: Response) => {
-  const { userId } = req.params;
+const router = express.Router();
 
+router.get("/:userId", async (req: Request, res: Response) => {
   try {
-    const user = await UserModel.findById(userId);
-    if (!user) {
-      return res.status(404).json({ message: "User not found." });
-    }
-
-    res.status(200).json({ balance: user.balance });
+    await UserController.getUserById(req, res);
   } catch (error) {
-    const errorMessage =
-      error instanceof Error ? error.message : "Unknown error";
-    res.status(500).json({ message: "Server error.", error: errorMessage });
+    if (error instanceof Error) {
+      res.status(500).send(error.message);
+    } else {
+      res.status(500).send("An unknown error occurred");
+    }
   }
-};
+});
+router.get("/:agentId", async (req: Request, res: Response) => {
+  try {
+    await AgentController.getAgentById(req, res);
+  } catch (error) {
+    if (error instanceof Error) {
+      res.status(500).send(error.message);
+    } else {
+      res.status(500).send("An unknown error occurred");
+    }
+  }
+});
+
+export const userRoutes = router;

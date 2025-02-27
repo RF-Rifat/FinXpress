@@ -10,7 +10,7 @@ createRoot(document.getElementById("root")!).render(
   <StrictMode>
     <AuthProvider>
       <ThemeProvider>
-        <Toaster position="top-center" reverseOrder={false} />
+        <Toaster position="bottom-right" reverseOrder={false} />
         <AppRoutes />
       </ThemeProvider>
     </AuthProvider>

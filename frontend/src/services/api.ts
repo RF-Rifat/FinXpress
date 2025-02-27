@@ -92,14 +92,21 @@ export const transactionApi = {
   },
 };
 
+const token = localStorage.getItem("token");
+if (!token) {
+  throw new Error("No token found.");
+}
 export const adminApi = {
+  getAllAdminData: async () => {
+    return api.get("/admin/all-data", { headers: { Authorization: `${token}` } });
+  },
   blockUser: async (userId: string) => {
-    return api.put(`/admin/block-user/${userId}`);
+    return api.put(`/admin/block-user/${userId}`, { token });
   },
 
   approveAgent: async (data: {
     agentId: string;
-    status: "approve" | "reject";
+    status: "active" | "blocked";
   }) => {
     return api.post("/admin/approve-agent", data);
   },
@@ -126,5 +133,11 @@ export const adminApi = {
   getAllTransactions: async () => {
     return api.get("/admin/all-transactions");
   },
+};
+
+export const userApi = {
+  getUserById: async (userId: string) => {
+    return api.get(`/users/${userId}`);
+  }
 };
 export default api;

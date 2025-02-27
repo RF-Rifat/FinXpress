@@ -104,7 +104,7 @@ export const login = async (req: Request, res: Response) => {
     }
 
     const token = jwt.sign(
-      { userId: user._id, accountType: user.accountType },
+      { userId: user._id, accountType: user.accountType, email: user.email, name: user.name },
       config.jwt.tokenSecret as string,
       {
         expiresIn: "10d",

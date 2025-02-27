@@ -4,13 +4,13 @@ import { adminMiddleware } from "../middlewares/adminMiddleware";
 
 const router = express.Router();
 
-router.use(async (req, res, next) => {
-  try {
-    await adminMiddleware(req, res, next);
-  } catch (error) {
-    next(error);
-  }
-});
+// router.use(async (req, res, next) => {
+//   try {
+//     await adminMiddleware(req, res, next);
+//   } catch (error) {
+//     next(error);
+//   }
+// });
 
 router.put("/block-user/:userId", async (req: Request, res: Response) => {
   try {
@@ -51,6 +51,17 @@ router.post("/add-money-to-agent", async (req: Request, res: Response) => {
 router.get("/monitor-total-money", async (req: Request, res: Response) => {
   try {
     await AdminController.monitorTotalMoney(req, res);
+  } catch (error) {
+    if (error instanceof Error) {
+      res.status(500).send(error.message);
+    } else {
+      res.status(500).send("An unknown error occurred");
+    }
+  }
+});
+router.get("/all-data", async (req: Request, res: Response) => {
+  try {
+    await AdminController.getAllAdminData(req, res);
   } catch (error) {
     if (error instanceof Error) {
       res.status(500).send(error.message);
